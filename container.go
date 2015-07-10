@@ -206,7 +206,7 @@ type Config struct {
 	Image           string              `json:"Image,omitempty" yaml:"Image,omitempty"`
 	Volumes         map[string]struct{} `json:"Volumes,omitempty" yaml:"Volumes,omitempty"`
 	VolumeDriver    string              `json:"VolumeDriver,omitempty" yaml:"VolumeDriver,omitempty"`
-	VolumesFrom     string              `json:"VolumesFrom,omitempty" yaml:"VolumesFrom,omitempty"`
+	VolumesFrom     []string            `json:"VolumesFrom,omitempty" yaml:"VolumesFrom,omitempty"`
 	WorkingDir      string              `json:"WorkingDir,omitempty" yaml:"WorkingDir,omitempty"`
 	MacAddress      string              `json:"MacAddress,omitempty" yaml:"MacAddress,omitempty"`
 	Entrypoint      []string            `json:"Entrypoint" yaml:"Entrypoint"`
