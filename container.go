@@ -130,6 +130,7 @@ type PortMapping map[string]string
 type NetworkSettings struct {
 	IPAddress   string                 `json:"IPAddress,omitempty" yaml:"IPAddress,omitempty"`
 	IPPrefixLen int                    `json:"IPPrefixLen,omitempty" yaml:"IPPrefixLen,omitempty"`
+	MacAddress  string                 `json:"MacAddress,omitempty" yaml:"MacAddress,omitempty"`
 	Gateway     string                 `json:"Gateway,omitempty" yaml:"Gateway,omitempty"`
 	Bridge      string                 `json:"Bridge,omitempty" yaml:"Bridge,omitempty"`
 	PortMapping map[string]PortMapping `json:"PortMapping,omitempty" yaml:"PortMapping,omitempty"`
@@ -252,6 +253,7 @@ type Container struct {
 	ResolvConfPath string `json:"ResolvConfPath,omitempty" yaml:"ResolvConfPath,omitempty"`
 	HostnamePath   string `json:"HostnamePath,omitempty" yaml:"HostnamePath,omitempty"`
 	HostsPath      string `json:"HostsPath,omitempty" yaml:"HostsPath,omitempty"`
+	LogPath        string `json:"LogPath,omitempty" yaml:"LogPath,omitempty"`
 	Name           string `json:"Name,omitempty" yaml:"Name,omitempty"`
 	Driver         string `json:"Driver,omitempty" yaml:"Driver,omitempty"`
 
@@ -329,8 +331,8 @@ func (c *Client) ContainerChanges(id string) ([]Change, error) {
 // See http://goo.gl/2xxQQK for more details.
 type CreateContainerOptions struct {
 	Name       string
-	Config     *Config `qs:"-"`
-	HostConfig *HostConfig
+	Config     *Config     `qs:"-"`
+	HostConfig *HostConfig `qs:"-"`
 }
 
 // CreateContainer creates a new container, returning the container instance,
@@ -669,6 +671,8 @@ type StatsOptions struct {
 	Stream bool
 	// A flag that enables stopping the stats operation
 	Done <-chan bool
+	// Initial connection timeout
+	Timeout time.Duration
 }
 
 // Stats sends container statistics for the given container to the given channel.
@@ -705,6 +709,7 @@ func (c *Client) Stats(opts StatsOptions) (retErr error) {
 			rawJSONStream:  true,
 			useJSONDecoder: true,
 			stdout:         writeCloser,
+			timeout:        opts.Timeout,
 		})
 		if err != nil {
 			dockerError, ok := err.(*Error)
@@ -944,6 +949,7 @@ type LogsOptions struct {
 	Follow       bool
 	Stdout       bool
 	Stderr       bool
+	Since        int64
 	Timestamps   bool
 	Tail         string
 
