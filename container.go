@@ -1065,6 +1065,7 @@ func (c *Client) Logs(opts LogsOptions) error {
 		setRawTerminal: opts.RawTerminal,
 		stdout:         opts.OutputStream,
 		stderr:         opts.ErrorStream,
+		timeout:        30 * time.Minute,
 	})
 }
 
